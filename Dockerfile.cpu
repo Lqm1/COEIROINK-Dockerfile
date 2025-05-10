@@ -1,0 +1,32 @@
+FROM ubuntu:22.04
+
+# uvインストールに必要なパッケージをインストール
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
+
+# uvインストーラーをダウンロード
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+
+# インストーラーを実行して削除
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+
+# インストールされたバイナリがPATHに含まれるように設定
+ENV PATH="/root/.local/bin/:$PATH"
+
+# 作業ディレクトリの設定
+WORKDIR /app
+
+# 必要なファイルをコンテナにコピー
+COPY . /app/
+
+# 環境変数の設定
+ENV PYTHONUNBUFFERED=1
+
+# ダウンロードスクリプトの実行（CPU版）
+RUN uv sync
+RUN uv run download.py CPU -v 2.10.1
+
+# 実行ファイルのパーミッションを変更
+RUN chmod +x /app/coeiroink/engine/engine
+
+# エンジンの実行
+CMD ["sh", "-c", "cd /app/coeiroink && ./engine/engine"]

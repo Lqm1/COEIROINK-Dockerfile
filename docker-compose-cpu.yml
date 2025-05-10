@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  coeiroink:
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+    restart: unless-stopped
+    network_mode: "service:nginx"
+    depends_on:
+      - nginx
+    # スピーカー情報を永続化
+    volumes:
+      - ${USERPROFILE}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info
+    # コンテナのログサイズを制限（オプション）
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      # ホストの50032ポートをNginxの50032ポートにマッピング
+      - "0.0.0.0:50032:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: unless-stopped
