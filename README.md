@@ -1,6 +1,6 @@
 # COEIROINK-Dockerfile
 
-COEIROINKをDocker上でホスティングするためのDockerfileとdocker-compose設定のコレクションです。このプロジェクトを使用することで、CPU環境とGPU環境の両方でCOEIROINK APIを簡単に実行できます。
+COEIROINKをDocker上でホスティングするためのDockerfileのコレクションです。このプロジェクトを使用することで、CPU環境とGPU環境の両方でCOEIROINK APIを簡単に実行できます。
 
 ## 概要
 
@@ -8,15 +8,14 @@ COEIROINKをDocker上でホスティングするためのDockerfileとdocker-com
 
 - `Dockerfile.cpu` - CPU環境向けのDockerfile
 - `Dockerfile.gpu` - GPU環境向けのDockerfile
-- `docker-compose-cpu.yml` - CPU環境向けのDocker Compose設定
-- `docker-compose-gpu.yml` - GPU環境向けのDocker Compose設定
 - `download.py` - COEIROINK実行ファイルの自動ダウンロードスクリプト
+- `entrypoint.sh` - Dockerコンテナ起動時に実行されるスクリプト
 
 ## 特徴
 
 - 公式サイトから自動的にCOEIROINK実行ファイルをダウンロードして配置
 - CPUとGPUの両方の環境に対応
-- Nginxを使用したリバースプロキシにより、外部からのアクセスを可能に
+- socatを使用した簡易的なリバースプロキシにより、外部からのアクセスを可能に
 - Dockerボリュームによるspeaker_infoの永続化で、話者の追加が容易
 - ユーザープロファイルの既存のspeaker_infoディレクトリとの連携
 
@@ -25,13 +24,21 @@ COEIROINKをDocker上でホスティングするためのDockerfileとdocker-com
 ### CPU環境での実行
 
 ```bash
-docker-compose -f docker-compose-cpu.yml up -d --build
+# イメージのビルド
+docker build -f Dockerfile.cpu -t coeiroink-cpu .
+
+# コンテナの実行
+docker run -d --name coeiroink-cpu -p 50032:8000 -v ${HOME}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info coeiroink-cpu
 ```
 
 ### GPU環境での実行（NVIDIAドライバーとDocker GPU対応が必要）
 
 ```bash
-docker-compose -f docker-compose-gpu.yml up -d --build
+# イメージのビルド
+docker build -f Dockerfile.gpu -t coeiroink-gpu .
+
+# コンテナの実行
+docker run -d --name coeiroink-gpu --gpus all -p 50032:8000 -v ${HOME}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info coeiroink-gpu
 ```
 
 ### アクセス方法
@@ -62,7 +69,6 @@ ${HOME}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info
 ## 動作要件
 
 - Docker
-- Docker Compose
 - GPU版を使用する場合：NVIDIA Container Toolkit
 
 ## ライセンス
