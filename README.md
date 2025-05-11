@@ -47,7 +47,7 @@ http://localhost:50032/
 COEIROINK-Dockerfileは、以下のディレクトリをマウントして永続化します：
 
 ```
-${USERPROFILE}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info
+${HOME}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info
 ```
 
 これにより、Dockerコンテナを再作成しても話者情報が保持されます。また、ホストマシンのCOEIROINKアプリケーションと同じ話者情報を共有することも可能です。
