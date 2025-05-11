@@ -10,7 +10,6 @@ COEIROINKをDocker上でホスティングするためのDockerfileとdocker-com
 - `Dockerfile.gpu` - GPU環境向けのDockerfile
 - `docker-compose-cpu.yml` - CPU環境向けのDocker Compose設定
 - `docker-compose-gpu.yml` - GPU環境向けのDocker Compose設定
-- `nginx.conf` - Nginxによるリバースプロキシのための設定
 - `download.py` - COEIROINK実行ファイルの自動ダウンロードスクリプト
 
 ## 特徴
