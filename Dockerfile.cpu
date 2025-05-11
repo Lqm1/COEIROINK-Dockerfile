@@ -1,7 +1,10 @@
 FROM ubuntu:22.04
 
-# socatのインストール
-RUN apt-get update && apt-get install -y socat
+# caddyのインストール
+RUN apt-get update && apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
+RUN apt-get update && apt-get install -y caddy
 
 # uvインストールに必要なパッケージをインストール
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
@@ -33,7 +36,7 @@ RUN chmod +x /app/coeiroink/engine/engine
 RUN chmod +x /app/entrypoint.sh
 
 # コンテナ上で外部アクセス用のポートを宣言
-EXPOSE 8000
+EXPOSE 2080
 
 # エンジンの実行
 ENTRYPOINT ["/app/entrypoint.sh"]
