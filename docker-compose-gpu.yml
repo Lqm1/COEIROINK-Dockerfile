@@ -8,10 +8,9 @@ services:
     restart: unless-stopped
     network_mode: "service:nginx"
     depends_on:
-      - nginx
-    # スピーカー情報を永続化
+      - nginx    # スピーカー情報を永続化
     volumes:
-      - ${USERPROFILE}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info
+      - ${HOME:-${USERPROFILE}}/.local/share/COEIROINK-Engine/speaker_info:/app/coeiroink/speaker_info
     # GPUサポートを有効化
     deploy:
       resources:
