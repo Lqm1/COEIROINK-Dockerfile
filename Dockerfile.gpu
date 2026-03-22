@@ -29,7 +29,7 @@ ENV PYTHONUNBUFFERED=1
 
 # ダウンロードスクリプトの実行（GPU版）
 RUN uv sync
-RUN uv run download.py GPU -v 2.10.1
+RUN uv run download.py --gpu --version 2.12.3
 
 # 実行ファイルのパーミッションを変更
 RUN chmod +x /app/coeiroink/engine/engine
