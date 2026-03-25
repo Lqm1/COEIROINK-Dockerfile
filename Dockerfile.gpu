@@ -21,8 +21,8 @@ ENV PATH="/root/.local/bin/:$PATH"
 # 作業ディレクトリの設定
 WORKDIR /app
 
-# 必要なファイルをコンテナにコピー
-COPY . /app/
+# 依存解決とダウンロードに必要なファイルを先にコピー
+COPY pyproject.toml uv.lock .python-version download.py /app/
 
 # 環境変数の設定
 ENV PYTHONUNBUFFERED=1
@@ -30,6 +30,9 @@ ENV PYTHONUNBUFFERED=1
 # ダウンロードスクリプトの実行（GPU版）
 RUN uv sync
 RUN uv run download.py --gpu --version 2.12.3
+
+# 残りのアプリケーションファイルをコピー
+COPY . /app/
 
 # 実行ファイルのパーミッションを変更
 RUN chmod +x /app/coeiroink/engine/engine
